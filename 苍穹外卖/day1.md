@@ -47,7 +47,7 @@
 ```
 
 - localhost:8080/doc.html
-![图 0](../../images/9e5058c5ff08fa443bfd956f13e60e78bec1070ff66b76cd450be90247bbc3ca.png)  
+![图 0](../images/9e5058c5ff08fa443bfd956f13e60e78bec1070ff66b76cd450be90247bbc3ca.png)  
 
 ### swagger 相关注解
 
@@ -62,12 +62,12 @@
 
 #### @Api
 
-![图 1](../../images/d47118edad2a36ac8c41d706ac50e16b17e67f1a356c500573f522bb72266b0b.png)  
+![图 1](../images/d47118edad2a36ac8c41d706ac50e16b17e67f1a356c500573f522bb72266b0b.png)  
 
 #### @ApiModel @ApiModelProperty
 
-![图 3](../../images/7614ecabc119a3ce0d88409a85fbc6334cc9dcda2d0532c6ded6268b738c6e46.png)  
+![图 3](../images/7614ecabc119a3ce0d88409a85fbc6334cc9dcda2d0532c6ded6268b738c6e46.png)  
 
 #### @ApiOperation
 
-![图 2](../../images/b5dcf63f18d347c8b9ab27185062a3aa2894bc2465771092826eed790e56d25a.png)  
+![图 2](../images/b5dcf63f18d347c8b9ab27185062a3aa2894bc2465771092826eed790e56d25a.png)  
