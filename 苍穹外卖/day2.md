@@ -121,3 +121,17 @@ public class BaseContext {
 
 }
 ```
+
+## PutMapping, PostMapping, GetMapping
+
+|注解|含义|是否带泛型|
+|--|--|--|
+|PutMapping|修改数据|不用带泛型|
+|PostMapping|增加数据|不用带泛型|
+|GetMapping|获取数据|需要带泛型接收数据|
+
+## 一些 mybatis 的语法
+
+![图 4](../images/5c3ec4b8f968f6fe27b0465b77d7634cf85f163a60744b9b498fbf5cea040b89.png)  
+
+- 语句与 sql 中的表项保持一致
