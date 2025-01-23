@@ -86,86 +86,9 @@ private volatile int state;
 
 ![图 11](../../images/0ba985545486a2b9169437c2ac772007a0ed982c4a76e35b972eaefe8245652a.png)  
 
-### 加锁
+### 加锁 & 解锁
 
-- 公平锁需要判断是否需要排队
-
-![图 14](../../images/5d97e83c49dc15b40e22d777e181f7be4beb9db7313ced70e0b2876dca950ec5.png)  
-
-![图 12](../../images/aeeccd5970f1f2ceea5d5197889ab0fe5815248835fa64b6263d813c85fb8a05.png)  
-
-![图 13](../../images/a7723d48dfc7f3b16efdc6949e805f2a9177d1de076ef8c75222965d476e410c.png)  
-
-![图 16](../../images/fbc31df1412109c8bc7b7857a22b560b291d67e04f74900c6448a5e975f5fb7e.png)  
-
-![图 17](../../images/59b83f960098367105c56e05f1fc5626dabb3e144e4af079ce34755a072e138c.png)  
-
-![图 18](../../images/0de99bc68aa245303e0c79da5996db93b06b151e0a8cc70338eebfd35db9746c.png)  
-
-#### lock()
-
-![图 20](../../images/b18179455ac7698a11b96dcf1f1a1d04021592e26aa74cd56f13e870ec8d7f28.png)  
-
-![图 19](../../images/e2f5e7730d8c25bbbc4de51d8262357b13d52b8027c5820f750a17d305386eba.png)  
-
-#### acquire()
-
-![图 21](../../images/258103e6c99e030b712e3319f7acd7cdd539c386b3e0e938cbaf2bdd660e00c3.png)  
-
-- 调用 tryAcquire ，尝试获得锁
-
-![图 22](../../images/f05eafad2cf29fc7060bc7ce04e35b8ac39c684da0dd3a58ec320b7851cd9c68.png)  
-
-- 调用 addwaiter ，通过enq入队
-
-![图 23](../../images/eb780c3d24f64e814b335efe08d14467804eea4be6a803dca9e6e5209c4552e9.png)  
-
-- 调用 acquireQueued ，坐稳队列
-
-```java
-final boolean acquireQueued(final Node node, int arg) {
-        boolean failed = true;
-        try {
-            boolean interrupted = false;
-            for (;;) {//死循环
-                final Node p = node.predecessor();//获得该node的前置节点
-                /**
-                * 如果前置节点是head，表示之前的节点就是正在运行的线程，表示是第一个排队的
-（一般讲队列中第一个是正在处理的，可以想象买票的过程，第一个人是正在买票(处理中)，第二个才是真正排队的人）；
-那么再去tryAcquire尝试获取锁，如果获取成功，说明此时前置线程已经运行结束，则将head设置为当前节点返回
-                *
-                *
-                **/
-                if (p == head && tryAcquire(arg)) {
-                    setHead(node);
-                    p.next = null; // help GC，将前置节点移出队列，这样就没有指针指向它，可以被gc回收
-                    failed = false;
-                    return interrupted;//返回false表示不能被打断，意思是没有被挂起，也就是获得到了锁
-                }
-                /**shouldParkAfterFailedAcquire将前置node设置为需要被挂起，
-                    注意这里的waitStatus是针对当前节点来说的，
-                    即是前置node的ws指的是下一个节点的状态
-                    
-                检查上一个节点的状态，如果是 SIGNAL 就阻塞，否则就改成 SIGNAL，告诉上一个节点，在释放锁的时候记得通知自己
-                **/
-                if (shouldParkAfterFailedAcquire(p, node) &&
-                    parkAndCheckInterrupt())// 然后就可以把自己挂起了，挂起线程 park()
-                    interrupted = true;
-            }
-        } finally {
-            if (failed)
-                cancelAcquire(node);//如果失败取消尝试获取锁(从上面的代码看只有进入p == head && tryAcquire(arg)这个逻辑是才会触发，这个时候前置节点正好在当前节点入队的时候执行完，当前节点正好获得锁，具体的代码以后分析)
-        }
-    }
-//看到因为是死循环，所以当执行到parkAndCheckInterrupt()时，当前线程被挂起，等到某一天被unpark继续执行，这个时候已经是对头的第二个节点了，那么就会进入if (p == head && tryAcquire(arg))逻辑获取到锁并结束循环
-```
-
-### 解锁
-
-![图 27](../../images/6c2a86f967b54b44701ff42aad9efee0f96147e03659d7deb7a48a9eb79f8865.png)  
-
-- 释放锁（修改资源的占有状态，即修改 `state` 的值）
-- 唤醒头节点的后置节点（获取下一个节点，唤醒）
+- 见 ReentrantLock.md
 
 ## AQS 是如何保证线程安全的
 
