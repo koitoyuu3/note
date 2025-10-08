@@ -117,7 +117,15 @@
 
 - `HashSet` 和 `HashMap` 都是通过 `equals()` 方法和 `hashcode()` 方法来去重的
 
-![图 40](../../images/c8a08f85a0e4df4c9a62278d21ec2d5f0d7f7d7d600505a95b48644f71822ef6.png)  
+![图 40](../../images/c8a08f85a0e4df4c9a62278d21ec2d5f0d7f7d7d600505a95b48644f71822ef6.png)
+
+## 为什么重写equals()一定要重写hashCode()？
+
+- 这是java中的一个规定，如果不重写的话，在涉及到hash的数据结构中就会出问题。
+
+- 比如说对于一个HashMap<User, Integer>，创建两个属性值都相同的user，此时user的equals方法被重写，认为只要属性值相同对象就相等，因此可以认为此时user1和user2是相等的。但是如果将（user1，111）放到map中，map.get(user2)的值就是空，因为他们都是通过hashCode()与运算来计算索引的，user1和user2的hashCode不同，就无法拿到值，这是不符合规则的。
+
+- 因此就必须重写hashCode()，让user1和user2可以通过调用hashCode()计算出完全相同的hash值
 
 ## 为什么要有 ConcurrentHashMap
 
