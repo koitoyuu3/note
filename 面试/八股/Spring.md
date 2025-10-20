@@ -42,3 +42,23 @@
 
 ## bean生命周期
 
+![图 1](../../images/f855c968936829ba1aa595233801e692f9fc4fa32fe56e569051f63194c179c9.png)  
+
+- 一个 Bean 从 “出生” 到 “退休”，总共分为四个步骤。
+
+- 第一步是实例化，Spring 会通过反射获取Bean的创建方法创建 Bean 对象。如果 Bean 的构造器里面有依赖，那在这个阶段，这些依赖也会顺带注入进来。
+
+- 第二步是属性注入，也就是我们熟悉的依赖注入，像 @Autowired 注解注入、setter 方法注入，都是在这个阶段完成
+的。到这一步，之前的 “毛坯房” 就开始真正装修起来了。
+
+- 第三步是初始化，这一步可是面试拉开差距的关键，因为它是一个 “三明治” 结构。
+
+  - 最先执行的是一堆 Aware 接口的方法，比如 BeanNameAware、BeanFactoryAware 等，通过这些接口，Bean 能知道自己的名字、所在的 Bean 工厂等信息；
+
+  - 接着，Spring 会给 Bean 第一次 “动手术” 的机会，也就是执行 BeanPostProcessor 的 before 方法（postProcessBeforeInitialization）；
+
+  - 然后才轮到 Bean 自己的初始化逻辑，比如 @PostConstruct 注解标注的方法、实现 InitializingBean ，还有在配置中指定的 init-method 方法；
+
+  - 最后，Spring 会给 Bean 第二次 “动手术” 的机会，执行 BeanPostProcessor 的 after 方法（postProcessAfterInitialization），很多 AOP 动态代理的逻辑就是在这个时候完成的，所以你最后拿到的 Bean，可能已经是经过动态代理处理、相当于 “换过心脏” 的代理对象了。
+
+- 第四步是销毁，当 Spring 容器关闭时，Spring 会调用相关的销毁逻辑帮 Bean 释放资源、优雅收尾，比如 @PreDestroy 注解标注的方法、实现 DisposableBean 接口重写的 destroy 方法，以及在配置中指定的 destroy-method 方法。
